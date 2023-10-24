@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Flowsy.Db.Abstractions</RootNamespace>
+        <LangVersion>11</LangVersion>
+        
+        <Title>Flowsy Db Abstractions</Title>
+        <Description>
+            Basic abstractions for managing database connections and perform related operations in the context of a unit of work.
+        </Description>
+
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/flowsydev/flowsy-net-db-abstractions</RepositoryUrl>
+
+        <PackageVersion>0.1.0</PackageVersion>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+
+        <NoWarn>$(NoWarn);NU5118;NU5128</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>
