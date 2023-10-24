@@ -34,11 +34,18 @@ The way of completing such operation from an application-level command handler c
 ```csharp
 public class CreateInvoiceCommandHandler
 {
+    private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+    
+    public CreateInvoiceCommandHandler(IUnitOfWorkFactory unitOfWorkFactory)
+    {
+        _unitOfWorkFactory = unitOfWorkFactory;
+    }
+    
     public async Task<CreateInvoiceCommandResult> HandleAsync(CreateInvoiceCommand command, CancellationToken cancellationToken)
     {
         // Begin operation
         // IUnitOfWork inherits from IDisposable and IAsyncDisposable, if any exception is thrown, the current operation shall be rolled back
-        await using var unitOfWork = unitOfWorkFactory.Create<ICreateInvoiceUnitOfWork>();
+        await using var unitOfWork = _unitOfWorkFactory.Create<ISalesUnitOfWork>();
 
         var invoice = new Invoice();
         // Populate invoice object from properties of command object 
@@ -57,7 +64,7 @@ public class CreateInvoiceCommandHandler
         }
 
         // Commit the current operation        
-        await unitOfWork.CommitAsync(cancellationToken);
+        await unitOfWork.SaveAsync(cancellationToken);
         
         // Return the result of the operation
         return new CreateInvoiceCommandResult
