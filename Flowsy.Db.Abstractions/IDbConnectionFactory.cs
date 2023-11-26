@@ -19,4 +19,9 @@ public interface IDbConnectionFactory
     /// <param name="key">The connection identifier.</param>
     /// <returns>A database connection</returns>
     IDbConnection GetConnection(string? key = null);
+    
+    /// <summary>
+    /// A list of DbConnectionConfiguration objects used to create database connections.
+    /// </summary>
+    IEnumerable<DbConnectionConfiguration> Configurations { get; }
 }

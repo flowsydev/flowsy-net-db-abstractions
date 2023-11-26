@@ -43,4 +43,7 @@ public sealed class DbConnectionConfiguration
     /// The exact contents of the connection string depend on the specific data source for this connection.
     /// </summary>
     public string ConnectionString { get; set; }
+    
+    
+    public DbMigrationConfiguration? Migration { get; set; }
 }
