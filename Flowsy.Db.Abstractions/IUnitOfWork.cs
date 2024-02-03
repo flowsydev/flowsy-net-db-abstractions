@@ -7,41 +7,46 @@ namespace Flowsy.Db.Abstractions;
 public interface IUnitOfWork : IDisposable, IAsyncDisposable
 {
     /// <summary>
-    /// The object representing the underlying transaction
+    /// Begins work to be persisted.
     /// </summary>
-    object Transaction { get; }
+    void BeginWork();
+    
+    /// <summary>
+    /// Event raised when the work for this unit has begun.
+    /// </summary>
+    event EventHandler? WorkBegun;
     
     /// <summary>
     /// Persists all the changes made in the context of the unit of work.
     /// </summary>
-    void Save();
+    void SaveWork();
     
     /// <summary>
     /// Asynchronously persists all the changes made in the context of the unit of work.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    Task SaveAsync(CancellationToken cancellationToken);
+    Task SaveWorkAsync(CancellationToken cancellationToken);
     
     /// <summary>
     /// Event raised when all the changes were saved successfully.
     /// </summary>
-    event EventHandler? Saved;
+    event EventHandler? WorkSaved;
     
     /// <summary>
     /// Rolls back all the changes made in the context of the unit of work.
     /// This method shall be invoked when disposed.
     /// </summary>
-    void Undo();
+    void DiscardWork();
     
     /// <summary>
     /// Asynchronously rolls back all the changes made in the context of the unit of work.
     /// This method shall be invoked when disposed.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    Task UndoAsync(CancellationToken cancellationToken);
+    Task DiscardWorkAsync(CancellationToken cancellationToken);
     
     /// <summary>
     /// Event raised when the changes were rolled back.
     /// </summary>
-    event EventHandler? Undone;
+    event EventHandler? WorkDiscarded;
 }
