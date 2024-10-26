@@ -56,5 +56,11 @@ namespace Flowsy.Db.Abstractions.Resources {
                 return ResourceManager.GetString("FailedToCreateConnectionForProviderX", resourceCulture);
             }
         }
+        
+        internal static string ProviderXIsNotSupported {
+            get {
+                return ResourceManager.GetString("ProviderXIsNotSupported", resourceCulture);
+            }
+        }
     }
 }

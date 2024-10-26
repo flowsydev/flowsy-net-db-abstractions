@@ -63,6 +63,31 @@ public sealed class DbConnectionOptions
     /// <summary>
     /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
     /// </summary>
+    /// <param name="providerInvariantName">
+    /// The invariant name of the provider to use for the connection.
+    /// </param>
+    /// <param name="connectionString">
+    /// The connection string to use for the connection.
+    /// </param>
+    public DbConnectionOptions(string providerInvariantName, string connectionString)
+    {
+        Provider = providerInvariantName switch
+        {
+            "Npgsql" => DbProvider.PostgreSql,
+            "MySql.Data" => DbProvider.MySql,
+            "System.Data.SqlClient" => DbProvider.SqlServer,
+            "Oracle.ManagedDataAccess.Client" => DbProvider.Oracle,
+            "Microsoft.Data.Sqlite" => DbProvider.Sqlite,
+            _ => throw new NotSupportedException(string.Format(Strings.ProviderXIsNotSupported, providerInvariantName))
+        };
+        
+        ConnectionString = connectionString;
+        DatabaseName = ResolveDatabaseName(connectionString);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
+    /// </summary>
     /// <param name="provider">
     /// The provider to use for the connection.
     /// </param>

@@ -24,4 +24,7 @@
     <data name="FailedToCreateConnectionForProviderX" xml:space="preserve">
         <value>Failed to create a connection for provider {0}.</value>
     </data>
+    <data name="ProviderXIsNotSupported" xml:space="preserve">
+        <value>Provider {0} is not supported.</value>
+    </data>
 </root>
