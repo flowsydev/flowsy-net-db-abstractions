@@ -1,5 +1,6 @@
 using System.Data;
 using System.Data.Common;
+using Flowsy.Db.Abstractions.Resources;
 
 namespace Flowsy.Db.Abstractions;
 
@@ -130,7 +131,9 @@ public sealed class DbConnectionOptions
     )
     {
         var providerName = Provider.GetInvariantName();
-        var connection = DbProviderFactories.GetFactory(providerName).CreateConnection() ?? throw new InvalidOperationException("Failed to create a connection.");
+        var connection =
+            DbProviderFactories.GetFactory(providerName).CreateConnection() ?? 
+            throw new InvalidOperationException(string.Format(Strings.FailedToCreateConnectionForProviderX, providerName));
         
         var builder = new DbConnectionStringBuilder()
         {

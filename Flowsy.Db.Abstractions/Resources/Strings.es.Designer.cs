@@ -50,5 +50,11 @@ namespace Flowsy.Db.Abstractions.Resources {
                 return ResourceManager.GetString("ProviderXDoesNotHaveADefaultDatabaseName", resourceCulture);
             }
         }
+        
+        internal static string FailedToCreateConnectionForProviderX {
+            get {
+                return ResourceManager.GetString("FailedToCreateConnectionForProviderX", resourceCulture);
+            }
+        }
     }
 }

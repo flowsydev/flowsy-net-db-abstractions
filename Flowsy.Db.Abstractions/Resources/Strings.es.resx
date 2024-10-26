@@ -21,4 +21,7 @@
     <data name="ProviderXDoesNotHaveADefaultDatabaseName" xml:space="preserve">
         <value>El proveedor {0} no tiene una base de datos predeterminada.</value>
     </data>
+    <data name="FailedToCreateConnectionForProviderX" xml:space="preserve">
+        <value>No se pudo crear una conexión para le provedor {0}.</value>
+    </data>
 </root>
