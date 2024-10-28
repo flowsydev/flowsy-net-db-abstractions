@@ -25,13 +25,21 @@ public sealed class DbParameterDescriptor
     /// <param name="size">
     /// The parameter size.
     /// </param>
+    /// <param name="precision">
+    /// The parameter precision.
+    /// </param>
+    /// <param name="scale">
+    /// The parameter scale.
+    /// </param>
     public DbParameterDescriptor(
         string name,
         object? value = null,
         DbType? databaseType = null,
         ParameterDirection? direction = null,
-        int? size = null
-        ) : this (name, value, DbValueExpression.Raw, databaseType, null, direction, size)
+        int? size = null,
+        byte? precision = null,
+        byte? scale = null
+        ) : this (name, value, DbValueExpression.Raw, databaseType, null, direction, size, precision, scale)
     {
     }
     
@@ -59,6 +67,12 @@ public sealed class DbParameterDescriptor
     /// <param name="size">
     /// The parameter size.
     /// </param>
+    /// <param name="precision">
+    /// The parameter precision.
+    /// </param>
+    /// <param name="scale">
+    /// The parameter scale.
+    /// </param>
     public DbParameterDescriptor(
         string name,
         object? value = null,
@@ -66,7 +80,9 @@ public sealed class DbParameterDescriptor
         DbType? databaseType = null,
         string? customType = null,
         ParameterDirection? direction = null,
-        int? size = null
+        int? size = null,
+        byte? precision = null,
+        byte? scale = null
         )
     {
         Name = name;
@@ -77,6 +93,8 @@ public sealed class DbParameterDescriptor
         CustomType = customType;
         Direction = direction;
         Size = size;
+        Precision = precision;
+        Scale = scale;
     }
 
     /// <summary>
@@ -115,4 +133,14 @@ public sealed class DbParameterDescriptor
     /// The parameter size.
     /// </summary>
     public int? Size { get; }
+    
+    /// <summary>
+    /// The parameter precision.
+    /// </summary>
+    public byte? Precision { get; }
+    
+    /// <summary>
+    /// The parameter scale.
+    /// </summary>
+    public byte? Scale { get; }
 }
