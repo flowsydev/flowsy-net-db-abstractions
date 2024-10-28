@@ -27,4 +27,10 @@
     <data name="ProviderXIsNotSupported" xml:space="preserve">
         <value>El proveedor {0} no está soportado.</value>
     </data>
+    <data name="ProviderXCanNotReturnATableFromRoutineOfTypeY" xml:space="preserve">
+        <value>El proveedor {0} no puede retornar una tabla desde una rutina de tipo {1}.</value>
+    </data>
+    <data name="ProviderXDoesNotSupportRoutineTypeY" xml:space="preserve">
+        <value>El proveedor {0} no soporta rutinas de tipo {1}.</value>
+    </data>
 </root>

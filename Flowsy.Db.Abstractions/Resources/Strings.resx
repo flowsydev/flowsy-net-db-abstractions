@@ -27,4 +27,10 @@
     <data name="ProviderXIsNotSupported" xml:space="preserve">
         <value>Provider {0} is not supported.</value>
     </data>
+    <data name="ProviderXCanNotReturnATableFromRoutineOfTypeY" xml:space="preserve">
+        <value>Provider {0} cannot return a table from a routine of type {1}.</value>
+    </data>
+    <data name="ProviderXDoesNotSupportRoutineTypeY" xml:space="preserve">
+        <value>Provider {0} does not support routines of type {1}.</value>
+    </data>
 </root>

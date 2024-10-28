@@ -62,5 +62,17 @@ namespace Flowsy.Db.Abstractions.Resources {
                 return ResourceManager.GetString("ProviderXIsNotSupported", resourceCulture);
             }
         }
+        
+        internal static string ProviderXCanNotReturnATableFromRoutineOfTypeY {
+            get {
+                return ResourceManager.GetString("ProviderXCanNotReturnATableFromRoutineOfTypeY", resourceCulture);
+            }
+        }
+        
+        internal static string ProviderXDoesNotSupportRoutineTypeY {
+            get {
+                return ResourceManager.GetString("ProviderXDoesNotSupportRoutineTypeY", resourceCulture);
+            }
+        }
     }
 }
