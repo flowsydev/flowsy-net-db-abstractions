@@ -8,6 +8,79 @@ public class DbRoutineDescriptor
     /// <summary>
     /// Constructs a new <see cref="DbRoutineDescriptor"/>.
     /// </summary>
+    /// <param name="fullName">
+    /// The full name of the routine.
+    /// </param>
+    /// <param name="type">
+    /// The type of the routine.
+    /// </param>
+    /// <param name="returnsTable">
+    /// Whether the routine returns a table.
+    /// </param>
+    /// <param name="parameters">
+    /// The parameters of the routine.
+    /// </param>
+    public DbRoutineDescriptor(
+        string fullName,
+        DbRoutineType type,
+        bool returnsTable,
+        params DbParameterDescriptor[] parameters
+    ) : this (fullName, type, returnsTable, false, parameters)
+    {
+    }
+    
+    /// <summary>
+    /// Constructs a new <see cref="DbRoutineDescriptor"/>.
+    /// </summary>
+    /// <param name="fullName">
+    /// The full name of the routine.
+    /// </param>
+    /// <param name="type">
+    /// The type of the routine.
+    /// </param>
+    /// <param name="returnsTable">
+    /// Whether the routine returns a table.
+    /// </param>
+    /// <param name="useNamedParameters">
+    /// Whether to use named parameters.
+    /// </param>
+    /// <param name="parameters">
+    /// The parameters of the routine.
+    /// </param>
+    public DbRoutineDescriptor(
+        string fullName,
+        DbRoutineType type,
+        bool returnsTable,
+        bool useNamedParameters,
+        params DbParameterDescriptor[] parameters
+    )
+    {
+        string? schemaName;
+        string routineName;
+        if (fullName.Contains('.'))
+        {
+            var parts = fullName.Split('.');
+            schemaName = parts[0];
+            routineName = parts[1];
+        }
+        else
+        {
+            schemaName = null;
+            routineName = fullName;
+        }
+
+        SchemaName = schemaName;
+        RoutineName = routineName;
+        
+        Type = type;
+        ReturnsTable = returnsTable;
+        UseNamedParameters = useNamedParameters;
+        Parameters = parameters;
+    }
+    
+    /// <summary>
+    /// Constructs a new <see cref="DbRoutineDescriptor"/>.
+    /// </summary>
     /// <param name="schemaName">
     /// The name of the schema where the routine is located.
     /// </param>

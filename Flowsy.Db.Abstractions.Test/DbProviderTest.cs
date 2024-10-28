@@ -25,8 +25,7 @@ public class DbProviderTest
             new ("p_some_datetime", DateTime.Now, DbType.DateTime)
         ];
         var storedProcedure = new DbRoutineDescriptor(
-            "some_schema",
-            "some_procedure",
+            "some_schema.some_procedure",
             DbRoutineType.StoredProcedure,
             true,
             true,
