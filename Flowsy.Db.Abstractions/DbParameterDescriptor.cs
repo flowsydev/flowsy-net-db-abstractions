@@ -13,8 +13,39 @@ public sealed class DbParameterDescriptor
     /// <param name="name">
     /// The parameter name.
     /// </param>
-    /// <param name="runtimeType">
-    /// The parameter runtime type.
+    /// <param name="value">
+    /// The parameter value.
+    /// </param>
+    /// <param name="databaseType">
+    /// The parameter database type.
+    /// </param>
+    /// <param name="direction">
+    /// The parameter direction.
+    /// </param>
+    /// <param name="size">
+    /// The parameter size.
+    /// </param>
+    public DbParameterDescriptor(
+        string name,
+        object? value = null,
+        DbType? databaseType = null,
+        ParameterDirection? direction = null,
+        int? size = null
+        ) : this (name, value, DbValueExpression.Raw, databaseType, null, direction, size)
+    {
+    }
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbParameterDescriptor"/> class.
+    /// </summary>
+    /// <param name="name">
+    /// The parameter name.
+    /// </param>
+    /// <param name="value">
+    /// The parameter value.
+    /// </param>
+    /// <param name="valueExpression">
+    /// The parameter value expression.
     /// </param>
     /// <param name="databaseType">
     /// The parameter database type.
@@ -28,37 +59,40 @@ public sealed class DbParameterDescriptor
     /// <param name="size">
     /// The parameter size.
     /// </param>
-    /// <param name="value">
-    /// The parameter value.
-    /// </param>
-    /// <param name="valueExpression">
-    /// The parameter value expression.
-    /// </param>
     public DbParameterDescriptor(
         string name,
-        Type runtimeType,
+        object? value = null,
+        DbValueExpression valueExpression = DbValueExpression.Raw,
         DbType? databaseType = null,
         string? customType = null,
         ParameterDirection? direction = null,
-        int? size = null,
-        object? value = null,
-        DbValueExpression valueExpression = DbValueExpression.Raw
+        int? size = null
         )
     {
         Name = name;
-        RuntimeType = runtimeType;
+        Value = value;
+        ValueExpression = valueExpression;
+        RuntimeType = value?.GetType() ?? typeof(object);
         DatabaseType = databaseType;
         CustomType = customType;
         Direction = direction;
         Size = size;
-        Value = value;
-        ValueExpression = valueExpression;
     }
 
     /// <summary>
     /// The parameter name.
     /// </summary>
     public string Name { get; }
+    
+    /// <summary>
+    /// The parameter value.
+    /// </summary>
+    public object? Value { get; }
+    
+    /// <summary>
+    /// The parameter value expression.
+    /// </summary>
+    public DbValueExpression ValueExpression { get; }
     
     /// <summary>
     /// The parameter runtime type.
@@ -81,14 +115,4 @@ public sealed class DbParameterDescriptor
     /// The parameter size.
     /// </summary>
     public int? Size { get; }
-    
-    /// <summary>
-    /// The parameter value.
-    /// </summary>
-    public object? Value { get; }
-    
-    /// <summary>
-    /// The parameter value expression.
-    /// </summary>
-    public DbValueExpression ValueExpression { get; }
 }

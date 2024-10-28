@@ -17,18 +17,20 @@ public class DbProviderTest
     {
         // Arrange
         var providers = Enum.GetValues<DbProvider>();
+        DbParameterDescriptor[] parameters =
+        [
+            new ("p_some_int", 1, DbType.Int32),
+            new ("p_some_string", "some string", DbType.String),
+            new ("p_some_enum", SomeEnum.FirstValue, DbValueExpression.CustomTypeCast, DbType.String, "some_enum"),
+            new ("p_some_datetime", DateTime.Now, DbType.DateTime)
+        ];
         var storedProcedure = new DbRoutineDescriptor(
             "some_schema",
             "some_procedure",
             DbRoutineType.StoredProcedure,
             true,
             true,
-            [
-                new DbParameterDescriptor("p_some_int", typeof(int), DbType.Int32, value: 1),
-                new DbParameterDescriptor("p_some_string", typeof(string), DbType.String, value: "some string"),
-                new DbParameterDescriptor("p_some_enum", typeof(SomeEnum), DbType.String, value: SomeEnum.FirstValue, customType: "some_enum", valueExpression: DbValueExpression.CustomTypeCast),
-                new DbParameterDescriptor("p_some_datetime", typeof(DateTime), DbType.DateTime, value: DateTime.Now)
-            ]
+            parameters
             );
         var tableFunction = new DbRoutineDescriptor(
             "some_schema",
@@ -36,12 +38,7 @@ public class DbProviderTest
             DbRoutineType.StoredFunction,
             true,
             true,
-            [
-                new DbParameterDescriptor("p_some_int", typeof(int), DbType.Int32, value: 1),
-                new DbParameterDescriptor("p_some_string", typeof(string), DbType.String, value: "some string"),
-                new DbParameterDescriptor("p_some_enum", typeof(SomeEnum), DbType.String, value: SomeEnum.FirstValue, customType: "some_enum", valueExpression: DbValueExpression.CustomTypeCast),
-                new DbParameterDescriptor("p_some_datetime", typeof(DateTime), DbType.DateTime, value: DateTime.Now)
-            ]
+            parameters
             );
         var scalarFunction = new DbRoutineDescriptor(
             "some_schema",
@@ -49,12 +46,7 @@ public class DbProviderTest
             DbRoutineType.StoredFunction,
             false,
             true,
-            [
-                new DbParameterDescriptor("p_some_int", typeof(int), DbType.Int32, value: 1),
-                new DbParameterDescriptor("p_some_string", typeof(string), DbType.String, value: "some string"),
-                new DbParameterDescriptor("p_some_enum", typeof(SomeEnum), DbType.String, value: SomeEnum.FirstValue, customType: "some_enum", valueExpression: DbValueExpression.CustomTypeCast),
-                new DbParameterDescriptor("p_some_datetime", typeof(DateTime), DbType.DateTime, value: DateTime.Now)
-            ]
+            parameters
             );
         DbRoutineDescriptor[] routines = [storedProcedure, tableFunction, scalarFunction];
         
