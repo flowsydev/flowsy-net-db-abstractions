@@ -33,4 +33,10 @@
     <data name="ProviderXDoesNotSupportRoutineTypeY" xml:space="preserve">
         <value>Provider {0} does not support routines of type {1}.</value>
     </data>
+    <data name="ProviderXDoesNotSupportConnectionStringBuilding" xml:space="preserve">
+        <value>Provider {0} does not support connection string building.</value>
+    </data>
+    <data name="ConnectionStringDoesNotContainAServerNameOrIpAddress" xml:space="preserve">
+        <value>The connection string does not contain a server name or IP address.</value>
+    </data>
 </root>

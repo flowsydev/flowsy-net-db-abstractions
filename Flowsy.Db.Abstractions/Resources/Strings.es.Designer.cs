@@ -74,5 +74,17 @@ namespace Flowsy.Db.Abstractions.Resources {
                 return ResourceManager.GetString("ProviderXDoesNotSupportRoutineTypeY", resourceCulture);
             }
         }
+        
+        internal static string ProviderXDoesNotSupportConnectionStringBuilding {
+            get {
+                return ResourceManager.GetString("ProviderXDoesNotSupportConnectionStringBuilding", resourceCulture);
+            }
+        }
+        
+        internal static string ConnectionStringDoesNotContainAServerNameOrIpAddress {
+            get {
+                return ResourceManager.GetString("ConnectionStringDoesNotContainAServerNameOrIpAddress", resourceCulture);
+            }
+        }
     }
 }

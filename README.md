@@ -2,35 +2,32 @@
 
 This package provides basic constructs for working with databases.
 
+
 ## DbProvider
-The `DbProvider` enumeration contains values that specify the type of database provider to use. The following values are available:
+The `DbProvider` class includes methods and properties that represent different database providers. It has the following properties:
 
-- PostgreSql
-- MySql
-- SqlServer
-- Oracle
-- Sqlite
-
-
-## DbProviderExtensions
-The `DbProviderExtensions` class provides extension methods for the `DbProvider` enumeration. It has the following methods:
-
-- GetInvariantName(): Returns the invariant name of the database provider.
-- GetDefaultPort(): Returns the default port number for the database provider.
-- GetDefaultDatabaseName(): Returns the default database name for the database provider.
-- FormatCasting: Formats a string that casts a value to a specific type in the database provider's SQL dialect.
-- SupportsEnums: Returns a boolean value that indicates whether the database provider supports enums.
-- SupportsRoutineType: Returns a boolean value that indicates whether the database provider supports the specified routine type.
-- RoutineCanReturnTable: Returns a boolean value that indicates whether the database provider supports routines that return tables.
-- SupportsNamedParameters: Returns a boolean value that indicates whether the database provider supports named parameters.
-- GetParameterPrefixForStatement: Returns the parameter prefix used by the database provider when building a statement.
-- BuildStatement: Builds a SQL statement using the specified parameters.
+- Family: A value from the `DbProviderFamily` enumeration that specifies the family of the database provider.
+- InvariantName: A string that contains the invariant name of the database provider.
+- DefaultPort: An integer that contains the default port number for the database provider.
+- DefaultDatabaseName: A string that contains the default database name for the database provider.
+- DefaulSchemaName: A string that contains the default schema name for the database provider.
+- Factory: A `DbProviderFactory` object that can be used to create instances of `IDbConnection`, `IDbCommand`, `IDbDataParameter`, and other database objects.
+- ParameterPrefixForStatement: A string that contains the parameter prefix used by the database provider when building a statement.
+- SupportsNamedParameters: A boolean value that indicates whether the database provider supports named parameters.
+- SupportsEnums: A boolean value that indicates whether the database provider supports enums.
+- SupportsRoutineType: A method that returns a boolean value that indicates whether the database provider supports the specified routine type.
+- RoutineCanReturnTable: A method that returns a boolean value that indicates whether the database provider supports routines that return tables.
+- FormatCasting: A method that formats a string that casts a value to a specific type in the database provider's SQL dialect.
+- FormatNamedParameter: A method that formats a string that represents a named parameter in the database provider's SQL dialect.
+- GetConnectionStringBuilder: A method that returns a `DbConnectionStringBuilder` object that can be used to build connection strings for the database provider.
+- BuildConnectionString: A method that builds a connection string using the specified parameters.
+- BuildStatement: A method that builds a SQL statement using the specified parameters.
 
 
 ## DbHost
 The `DbHost` class holds information about the host of a database. It has the following properties:
 
-- Provider: A value from the `DbProvider` enumeration that specifies the type of database provider to use.
+- Provider: An instance of the `DbProvider` class that specifies the type of database provider to use.
 - Address: A string that contains the host name or IP address of the database server.
 - Port: An integer that contains the port number of the database server.
 
@@ -38,17 +35,17 @@ The `DbHost` class holds information about the host of a database. It has the fo
 ## DbCredentials
 The `DbCredentials` class holds information about the credentials used to connect to a database. It has the following properties:
 
-- Username: A string that contains the username used to connect to the database.
+- UserName: A string that contains the username used to connect to the database.
 - Password: A string that contains the password used to connect to the database.
 
 
 ## DbConnectionOptions
 The `DbConnectionOptions` class is used to configure a connection to a database. It has the following properties and methods:
 
-- Provider: A value from the `DbProvider` enumeration that specifies the type of database provider to use.
+- Provider: An instance of the `DbProvider` class that specifies the type of database provider to use.
 - ConnectionString: A string that contains the connection string to the database.
 - DatabaseName: A string that contains the name of the database to connect to.
-- GetConnection(): Returns a `IDbConnection` to be used to interact with the database.
+- GetConnection(): Returns an instance of `IDbConnection` to be used to interact with the database.
 
 
 ## DbRoutineDescriptor

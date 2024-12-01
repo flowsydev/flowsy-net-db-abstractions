@@ -1,4 +1,6 @@
 using System.Data;
+using MySql.Data.MySqlClient;
+using Npgsql;
 using Xunit.Abstractions;
 
 namespace Flowsy.Db.Abstractions.Test;
@@ -16,7 +18,24 @@ public class DbProviderTest
     public void Should_BuildRoutineStatements()
     {
         // Arrange
-        var providers = Enum.GetValues<DbProvider>();
+        const string npgsqlProviderName = "Npgsql";
+        const string mysqlProviderName = "MySql.Data";
+        
+        DbProvider.Register(npgsqlProviderName, DbProviderFamily.PostgreSql, NpgsqlFactory.Instance);
+        DbProvider.Register(mysqlProviderName, DbProviderFamily.MySql, MySqlClientFactory.Instance);
+        
+        var providers = new List<DbProvider>
+        {
+            DbProvider.GetInstance(DbProviderFamily.PostgreSql),
+            DbProvider.GetInstance(DbProviderFamily.MySql)
+        };
+
+        var connectionStrings = new Dictionary<DbProviderFamily, string>
+        {
+            [DbProviderFamily.PostgreSql] = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres",
+            [DbProviderFamily.MySql] = "Server=localhost;Port=3306;Database=mysql;Uid=root;Pwd=root"
+        };
+        
         DbParameterDescriptor[] parameters =
         [
             new ("p_some_int", 1, DbType.Int32),
@@ -51,9 +70,17 @@ public class DbProviderTest
         
         // Act
         List<string> statements = [];
-        var separator = new string('=', 80);
+        var doubleLineSeparator = new string('=', 100);
+        var singleLineSeparator = new string('-', 100);
         foreach (var provider in providers)
         {
+            var connectionOptions = new DbConnectionOptions(provider, connectionStrings[provider.Family]);
+            using var connection = connectionOptions.GetConnection();
+            
+            _output.WriteLine(doubleLineSeparator);
+            _output.WriteLine("Connection string [{0}: {1}]", provider, connection.ConnectionString);
+            _output.WriteLine(doubleLineSeparator);
+            
             foreach (var routine in routines)
             {
                 if (!provider.SupportsRoutineType(routine.Type))
@@ -66,10 +93,11 @@ public class DbProviderTest
                 
                 _output.WriteLine($"Provider: {provider}, {routine.Type}({(routine.ReturnsTable ? "table" : "scalar")}): {routine.FullName}{Environment.NewLine}{statement}");
                 
-                _output.WriteLine(separator);
+                _output.WriteLine(singleLineSeparator);
                 
                 statements.Add(statement);
             }
+            _output.WriteLine(string.Empty);
         }
 
         // Assert
