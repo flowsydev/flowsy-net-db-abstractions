@@ -224,6 +224,9 @@ public class DbColumnDescriptor
         if (DbDataTypes.DateTime.Contains(sqlTypeNormalized))
             return DbType.DateTime;
         
+        if (DbDataTypes.DateTimeOffset.Contains(sqlTypeNormalized))
+            return DbType.DateTimeOffset;
+        
         if (DbDataTypes.Boolean.Contains(sqlTypeNormalized))
             return DbType.Boolean;
         
@@ -272,6 +275,9 @@ public class DbColumnDescriptor
         
         if (DbDataTypes.DateTime.Contains(sqlTypeNormalized))
             return typeof(DateTime);
+        
+        if (DbDataTypes.DateTimeOffset.Contains(sqlTypeNormalized))
+            return typeof(DateTimeOffset);
         
         if (DbDataTypes.Boolean.Contains(sqlTypeNormalized))
             return typeof(bool);

@@ -56,7 +56,8 @@ public class TableDescriptorTest : IClassFixture<PostgresDatabaseFixture>
                      second_last_name VARCHAR(100) NOT NULL,
                      birthdate DATE NULL,
                      gender gender NULL,
-                     visits INTEGER DEFAULT 0
+                     visits INTEGER DEFAULT 0,
+                     creation_instant TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CLOCK_TIMESTAMP()
                  );
                  """;
             command.ExecuteNonQuery();
@@ -107,7 +108,7 @@ public class TableDescriptorTest : IClassFixture<PostgresDatabaseFixture>
         // Assert
         Assert.NotNull(table);
         Assert.Equal("patient", table.TableName);
-        Assert.Equal(8, columns.Length);
+        Assert.Equal(9, columns.Length);
         Assert.Equal("patient_id", columns[0].ColumnName);
         Assert.Equal("first_name", columns[1].ColumnName);
         Assert.Equal("middle_name", columns[2].ColumnName);
@@ -124,5 +125,7 @@ public class TableDescriptorTest : IClassFixture<PostgresDatabaseFixture>
         Assert.Equal("visits", visitsColumn.ColumnName);
         var visitsValue = visitsColumn.ParseValue("10");
         Assert.Equal(10, visitsValue);
+        
+        Assert.Equal("creation_instant", columns[8].ColumnName);
     }
 }

@@ -42,7 +42,27 @@ public static class DbDataTypes
 
     public static readonly ISet<string> DateTime = new HashSet<string>
     {
-        "date", "time", "datetime", "smalldatetime", "datetime2", "timestamp"
+        "date", "time", "datetime", "smalldatetime", "datetime2", "timestamp", "timestamp without time zone", "timestamp with local time zone"
+    };
+    
+    public static readonly ISet<string> DateTimeOffset = new HashSet<string>
+    {
+        "timestamp with time zone", "timestamptz", "datetimeoffset"
+    };
+    
+    public static readonly ISet<string> Time = new HashSet<string>
+    {
+        "time", "time with time zone", "timetz", "time with time zone"
+    };
+
+    public static readonly ISet<string> Interval = new HashSet<string>
+    {
+        "interval"
+    };
+
+    public static readonly ISet<string> Year = new HashSet<string>
+    {
+        "year"
     };
 
     public static readonly ISet<string> Boolean = new HashSet<string>
@@ -100,19 +120,16 @@ public static class DbDataTypes
     /// <summary>
     /// Checks if the SQL type is an array.
     /// </summary>
-    /// <param name="datalType">
+    /// <param name="dataType">
     /// The SQL type to check.
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the SQL type is an array; otherwise, <see langword="false"/>.
     /// </returns>
-    public static bool IsArray(string datalType)
+    public static bool IsArray(string dataType)
     {
-        // Normalize SqlType to make the matching case-insensitive
-        var datalTypeNormalized = datalType.ToLowerInvariant();
-
-        // Check for common array indicators
-        return datalTypeNormalized.Contains("[]") || datalTypeNormalized.StartsWith("array");
+        var dataTypeNormalized = dataType.ToLowerInvariant();
+        return dataTypeNormalized.Contains("[]") || dataTypeNormalized.StartsWith("array") || dataTypeNormalized.EndsWith(" array");
     }
     
     /// <summary>
@@ -135,42 +152,51 @@ public static class DbDataTypes
         if (string.IsNullOrEmpty(value))
             return null;
         
-        var datalTypeNormalized = dataType.ToLower();
+        var dataTypeNormalized = dataType.ToLower();
 
-        if (SmallInteger.Contains(datalTypeNormalized))
+        if (SmallInteger.Contains(dataTypeNormalized))
             return short.Parse(value);
             
-        if (StandardInteger.Contains(datalTypeNormalized))
+        if (StandardInteger.Contains(dataTypeNormalized))
             return int.Parse(value);
             
-        if (LargeInteger.Contains(datalTypeNormalized))
+        if (LargeInteger.Contains(dataTypeNormalized))
             return long.Parse(value);
             
-        if (SinglePrecisionFloat.Contains(datalTypeNormalized))
+        if (SinglePrecisionFloat.Contains(dataTypeNormalized))
             return float.Parse(value);
             
-        if (DoublePrecisionFloat.Contains(datalTypeNormalized))
+        if (DoublePrecisionFloat.Contains(dataTypeNormalized))
             return double.Parse(value);
             
-        if (Decimal.Contains(datalTypeNormalized))
+        if (Decimal.Contains(dataTypeNormalized))
             return decimal.Parse(value);
             
-        if (Character.Contains(datalTypeNormalized))
+        if (Character.Contains(dataTypeNormalized))
             return value;
 
-        if (DateTime.Contains(datalTypeNormalized))
+        if (DateTime.Contains(dataTypeNormalized))
             return System.DateTime.Parse(value);
+        
+        if (DateTimeOffset.Contains(dataTypeNormalized))
+            return System.DateTimeOffset.Parse(value);
+        
+        if (Time.Contains(dataTypeNormalized) || Interval.Contains(dataTypeNormalized))
+            return TimeSpan.Parse(value);
+        
+        if (Year.Contains(dataTypeNormalized))
+            return int.Parse(value);
             
-        if (Boolean.Contains(datalTypeNormalized))
+        if (Boolean.Contains(dataTypeNormalized))
             return bool.Parse(value);
             
-        if (UniqueIdentifier.Contains(datalTypeNormalized))
+        if (UniqueIdentifier.Contains(dataTypeNormalized))
             return Guid.Parse(value);
             
-        if (Binary.Contains(datalTypeNormalized))
+        if (Binary.Contains(dataTypeNormalized))
             return ParseHexadecimalValue(value);
             
-        if (Json.Contains(datalTypeNormalized) || Xml.Contains(datalTypeNormalized) || Enumerated.Contains(datalTypeNormalized) || Set.Contains(datalTypeNormalized))
+        if (Json.Contains(dataTypeNormalized) || Xml.Contains(dataTypeNormalized) || Enumerated.Contains(dataTypeNormalized) || Set.Contains(dataTypeNormalized))
             return value;
             
         throw new ArgumentException(string.Format(Strings.CannotParseValueForSqlTypeX, dataType), nameof(value));
@@ -179,7 +205,7 @@ public static class DbDataTypes
     /// <summary>
     /// Parses an array value according to a SQL type.
     /// </summary>
-    /// <param name="datalType">
+    /// <param name="dataType">
     /// The SQL type.
     /// </param>
     /// <param name="value">
@@ -191,11 +217,10 @@ public static class DbDataTypes
     /// <returns>
     /// The parsed array value.
     /// </returns>
-    public static object?[] ParseArray(string datalType, string value, char separator = ',')
+    public static object?[] ParseArray(string dataType, string value, char separator = ',')
     {
-        // Split by comma for array representation, and recursively parse elements
-        var elements = value.Split(separator);
-        return elements.Select(e => ParseValue(datalType, e)).ToArray();
+        var elements = value.Trim('{', '}').Split(separator);
+        return elements.Select(e => ParseValue(dataType, e)).ToArray();
     }
 
     /// <summary>
