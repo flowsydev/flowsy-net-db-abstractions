@@ -118,7 +118,7 @@ public static class DbDataTypes
     /// <summary>
     /// Parses a value according to a SQL type.
     /// </summary>
-    /// <param name="datalType">
+    /// <param name="dataType">
     /// The SQL type.
     /// </param>
     /// <param name="value">
@@ -130,12 +130,12 @@ public static class DbDataTypes
     /// <exception cref="ArgumentException">
     /// Thrown when the value cannot be parsed.
     /// </exception>
-    public static object? ParseValue(string datalType, string? value)
+    public static object? ParseValue(string dataType, string? value)
     {
         if (string.IsNullOrEmpty(value))
             return null;
         
-        var datalTypeNormalized = datalType.ToLower();
+        var datalTypeNormalized = dataType.ToLower();
 
         if (SmallInteger.Contains(datalTypeNormalized))
             return short.Parse(value);
@@ -173,7 +173,7 @@ public static class DbDataTypes
         if (Json.Contains(datalTypeNormalized) || Xml.Contains(datalTypeNormalized) || Enumerated.Contains(datalTypeNormalized) || Set.Contains(datalTypeNormalized))
             return value;
             
-        throw new ArgumentException(string.Format(Strings.CannotParseValueForSqlTypeX, datalType), nameof(value));
+        throw new ArgumentException(string.Format(Strings.CannotParseValueForSqlTypeX, dataType), nameof(value));
     }
 
     /// <summary>

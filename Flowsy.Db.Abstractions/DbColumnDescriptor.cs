@@ -294,7 +294,7 @@ public class DbColumnDescriptor
     /// <param name="value">
     /// The value to parse.
     /// </param>
-    /// <param name="separator">
+    /// <param name="arraySeparator">
     /// The separator for array values.
     /// </param>
     /// <returns>
@@ -303,17 +303,20 @@ public class DbColumnDescriptor
     /// <exception cref="ArgumentException">
     /// Thrown when the value cannot be parsed.
     /// </exception>
-    public object? ParseValue(string? value, char separator = ',')
+    public object? ParseValue(string? value, char arraySeparator = ',')
     {
         if (string.IsNullOrEmpty(value))
             return IsNullable ? null : throw new ArgumentException(Strings.ValueCannotBeNullOrEmptyForNonNullableColumns);
 
+        if (IsUserDefinedType)
+            return value;
+        
         if (!IsArray)
             return DbDataTypes.ParseValue(DataType, value);
-
+        
         if (string.IsNullOrEmpty(UdtName))
             throw new ArgumentException(Strings.ArrayColumnMustHaveUserDefinedType);
             
-        return DbDataTypes.ParseArray(DbDataTypes.GetSqlType(UdtName), value, separator);
+        return DbDataTypes.ParseArray(DbDataTypes.GetSqlType(DataType), value, arraySeparator);
     }
 }
