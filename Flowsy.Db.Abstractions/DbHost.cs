@@ -183,5 +183,5 @@ public sealed class DbHost
     /// The connection options.
     /// </returns>
     public DbConnectionOptions CreateConnectionOptions(DbProvider provider, DbCredentials credentials, string? databaseName = null, IDictionary<string, string>? additionalParameters = null)
-        => new (BuildConnectionString(provider, credentials, databaseName, additionalParameters), provider);
+        => new (provider, BuildConnectionString(provider, credentials, databaseName, additionalParameters));
 }

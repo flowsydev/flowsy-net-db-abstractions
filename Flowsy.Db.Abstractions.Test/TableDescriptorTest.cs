@@ -37,7 +37,7 @@ public class TableDescriptorTest : IClassFixture<PostgresDatabaseFixture>
     public void Should_Create_Table()
     {
         // Arrange
-        var connectionOptions = new DbConnectionOptions(_databaseFixture.ConnectionString, ProviderFamily);
+        var connectionOptions = new DbConnectionOptions(ProviderFamily, _databaseFixture.ConnectionString);
 
         // Act
         var exception = Record.Exception(() =>
@@ -72,7 +72,7 @@ public class TableDescriptorTest : IClassFixture<PostgresDatabaseFixture>
     public void Should_Describe_Table()
     {
         // Arrange
-        var connectionOptions = new DbConnectionOptions(_databaseFixture.ConnectionString, ProviderFamily);
+        var connectionOptions = new DbConnectionOptions(ProviderFamily, _databaseFixture.ConnectionString);
         using var connection = connectionOptions.GetConnection(open: true);
 
         // Act

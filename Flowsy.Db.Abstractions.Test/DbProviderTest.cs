@@ -74,7 +74,7 @@ public class DbProviderTest
         var singleLineSeparator = new string('-', 100);
         foreach (var provider in providers)
         {
-            var connectionOptions = new DbConnectionOptions(connectionStrings[provider.Family], provider);
+            var connectionOptions = new DbConnectionOptions(provider, connectionStrings[provider.Family]);
             using var connection = connectionOptions.GetConnection();
             
             _output.WriteLine(doubleLineSeparator);
