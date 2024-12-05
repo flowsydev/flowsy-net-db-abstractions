@@ -177,4 +177,15 @@ public class DbRoutineDescriptor
     /// The statement to call the routine.
     /// </returns>
     public string BuildStatement(DbProvider provider) => provider.BuildStatement(this);
+    
+    /// <summary>
+    /// Builds a statement to call the routine.
+    /// </summary>
+    /// <param name="providerFamily">
+    /// The provider family to use.
+    /// </param>
+    /// <returns>
+    /// The statement to call the routine.
+    /// </returns>
+    public string BuildStatement(DbProviderFamily providerFamily) => DbProvider.GetInstance(providerFamily).BuildStatement(this);
 }
