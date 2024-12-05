@@ -256,51 +256,14 @@ public class DbColumnDescriptor
     /// </returns>
     public Type GetRuntimeType()
     {
-        var dataTypeNormalized = DataType.ToLower();
-
-        if (DbDataTypes.SmallInteger.Contains(dataTypeNormalized))
-            return typeof(short);
+        if (!IsArray)
+            return DbDataTypes.GetRuntimeType(DataType);
         
-        if (DbDataTypes.StandardInteger.Contains(dataTypeNormalized))
-            return typeof(int);
-        
-        if (DbDataTypes.LargeInteger.Contains(dataTypeNormalized))
-            return typeof(long);
-        
-        if (DbDataTypes.SinglePrecisionFloat.Contains(dataTypeNormalized))
-            return typeof(float);
-        
-        if (DbDataTypes.DoublePrecisionFloat.Contains(dataTypeNormalized))
-            return typeof(double);
-        
-        if (DbDataTypes.Decimal.Contains(dataTypeNormalized))
-            return typeof(decimal);
-        
-        if (DbDataTypes.Character.Contains(dataTypeNormalized))
-            return typeof(string);
-        
-        if (DbDataTypes.Date.Contains(dataTypeNormalized) || DbDataTypes.DateTime.Contains(dataTypeNormalized))
-            return typeof(DateTime);
-        
-        if (DbDataTypes.DateTimeOffset.Contains(dataTypeNormalized))
-            return typeof(DateTimeOffset);
-        
-        if (DbDataTypes.Time.Contains(dataTypeNormalized))
-            return typeof(TimeSpan);
-        
-        if (DbDataTypes.Boolean.Contains(dataTypeNormalized))
-            return typeof(bool);
-        
-        if (DbDataTypes.UniqueIdentifier.Contains(dataTypeNormalized))
-            return typeof(Guid);
-        
-        if (DbDataTypes.Binary.Contains(dataTypeNormalized))
-            return typeof(byte[]);
-        
-        if (DbDataTypes.Json.Contains(dataTypeNormalized) || DbDataTypes.Xml.Contains(dataTypeNormalized) || DbDataTypes.Enumerated.Contains(dataTypeNormalized) || DbDataTypes.Set.Contains(dataTypeNormalized))
-            return typeof(string);
-        
-        return typeof(string);
+        if (string.IsNullOrEmpty(UdtName))
+            throw new ArgumentException(Strings.ArrayColumnMustHaveUserDefinedType);
+            
+        var elementType = DbDataTypes.GetRuntimeType(DbDataTypes.GetSqlType(UdtName));
+        return Array.CreateInstance(elementType, 0).GetType();
     }
 
     /// <summary>
@@ -332,6 +295,6 @@ public class DbColumnDescriptor
         if (string.IsNullOrEmpty(UdtName))
             throw new ArgumentException(Strings.ArrayColumnMustHaveUserDefinedType);
             
-        return DbDataTypes.ParseArray(DbDataTypes.GetSqlType(DataType), value, arraySeparator);
+        return DbDataTypes.ParseArray(DbDataTypes.GetSqlType(UdtName), value, arraySeparator);
     }
 }

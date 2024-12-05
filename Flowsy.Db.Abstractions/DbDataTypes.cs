@@ -121,6 +121,64 @@ public static class DbDataTypes
     /// </returns>
     public static string GetSqlType(string udtName)
         => udtName.StartsWith("_") ? udtName[1..] : udtName;
+
+    /// <summary>
+    /// Gets the runtime type of a SQL type.
+    /// </summary>
+    /// <param name="dataType">
+    /// The SQL type.
+    /// </param>
+    /// <returns>
+    /// The runtime type of the SQL type.
+    /// </returns>
+    public static Type GetRuntimeType(string dataType)
+    {
+        var dataTypeNormalized = dataType.ToLowerInvariant();
+        
+        if (SmallInteger.Contains(dataTypeNormalized))
+            return typeof(short);
+        
+        if (StandardInteger.Contains(dataTypeNormalized))
+            return typeof(int);
+        
+        if (LargeInteger.Contains(dataTypeNormalized))
+            return typeof(long);
+        
+        if (SinglePrecisionFloat.Contains(dataTypeNormalized))
+            return typeof(float);
+        
+        if (DoublePrecisionFloat.Contains(dataTypeNormalized))
+            return typeof(double);
+        
+        if (Decimal.Contains(dataTypeNormalized))
+            return typeof(decimal);
+        
+        if (Character.Contains(dataTypeNormalized))
+            return typeof(string);
+        
+        if (Date.Contains(dataTypeNormalized) || DateTime.Contains(dataTypeNormalized))
+            return typeof(DateTime);
+        
+        if (DateTimeOffset.Contains(dataTypeNormalized))
+            return typeof(DateTimeOffset);
+        
+        if (Time.Contains(dataTypeNormalized))
+            return typeof(TimeSpan);
+        
+        if (Boolean.Contains(dataTypeNormalized))
+            return typeof(bool);
+        
+        if (UniqueIdentifier.Contains(dataTypeNormalized))
+            return typeof(Guid);
+        
+        if (Binary.Contains(dataTypeNormalized))
+            return typeof(byte[]);
+        
+        if (Json.Contains(dataTypeNormalized) || Xml.Contains(dataTypeNormalized) || Enumerated.Contains(dataTypeNormalized) || Set.Contains(dataTypeNormalized))
+            return typeof(string);
+        
+        return typeof(string);
+    }
     
     /// <summary>
     /// Checks if the SQL type is a user-defined type.
