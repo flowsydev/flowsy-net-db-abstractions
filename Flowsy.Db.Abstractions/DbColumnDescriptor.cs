@@ -198,45 +198,51 @@ public class DbColumnDescriptor
     /// </returns>
     public DbType GetDbType()
     {
-        var sqlTypeNormalized = DataType.ToLower();
+        var dataTypeNormalized = DataType.ToLower();
 
-        if (DbDataTypes.SmallInteger.Contains(sqlTypeNormalized))
+        if (DbDataTypes.SmallInteger.Contains(dataTypeNormalized))
             return DbType.Int16;
         
-        if (DbDataTypes.StandardInteger.Contains(sqlTypeNormalized))
+        if (DbDataTypes.StandardInteger.Contains(dataTypeNormalized))
             return DbType.Int32;
         
-        if (DbDataTypes.LargeInteger.Contains(sqlTypeNormalized))
+        if (DbDataTypes.LargeInteger.Contains(dataTypeNormalized))
             return DbType.Int64;
         
-        if (DbDataTypes.SinglePrecisionFloat.Contains(sqlTypeNormalized))
+        if (DbDataTypes.SinglePrecisionFloat.Contains(dataTypeNormalized))
             return DbType.Single;
         
-        if (DbDataTypes.DoublePrecisionFloat.Contains(sqlTypeNormalized))
+        if (DbDataTypes.DoublePrecisionFloat.Contains(dataTypeNormalized))
             return DbType.Double;
         
-        if (DbDataTypes.Decimal.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Decimal.Contains(dataTypeNormalized))
             return DbType.Decimal;
         
-        if (DbDataTypes.Character.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Character.Contains(dataTypeNormalized))
             return DbType.String;
         
-        if (DbDataTypes.DateTime.Contains(sqlTypeNormalized))
-            return DbType.DateTime;
+        if (DbDataTypes.Date.Contains(dataTypeNormalized))
+            return DbType.Date;
         
-        if (DbDataTypes.DateTimeOffset.Contains(sqlTypeNormalized))
+        if (DbDataTypes.DateTime.Contains(dataTypeNormalized))
+            return DbType.DateTime2;
+        
+        if (DbDataTypes.DateTimeOffset.Contains(dataTypeNormalized))
             return DbType.DateTimeOffset;
         
-        if (DbDataTypes.Boolean.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Time.Contains(dataTypeNormalized))
+            return DbType.Time;
+        
+        if (DbDataTypes.Boolean.Contains(dataTypeNormalized))
             return DbType.Boolean;
         
-        if (DbDataTypes.UniqueIdentifier.Contains(sqlTypeNormalized))
+        if (DbDataTypes.UniqueIdentifier.Contains(dataTypeNormalized))
             return DbType.Guid;
         
-        if (DbDataTypes.Binary.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Binary.Contains(dataTypeNormalized))
             return DbType.Binary;
         
-        if (DbDataTypes.Json.Contains(sqlTypeNormalized) || DbDataTypes.Xml.Contains(sqlTypeNormalized) || DbDataTypes.Enumerated.Contains(sqlTypeNormalized) || DbDataTypes.Set.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Json.Contains(dataTypeNormalized) || DbDataTypes.Xml.Contains(dataTypeNormalized) || DbDataTypes.Enumerated.Contains(dataTypeNormalized) || DbDataTypes.Set.Contains(dataTypeNormalized))
             return DbType.String;
 
         return DbType.String;
@@ -250,45 +256,48 @@ public class DbColumnDescriptor
     /// </returns>
     public Type GetRuntimeType()
     {
-        var sqlTypeNormalized = DataType.ToLower();
+        var dataTypeNormalized = DataType.ToLower();
 
-        if (DbDataTypes.SmallInteger.Contains(sqlTypeNormalized))
+        if (DbDataTypes.SmallInteger.Contains(dataTypeNormalized))
             return typeof(short);
         
-        if (DbDataTypes.StandardInteger.Contains(sqlTypeNormalized))
+        if (DbDataTypes.StandardInteger.Contains(dataTypeNormalized))
             return typeof(int);
         
-        if (DbDataTypes.LargeInteger.Contains(sqlTypeNormalized))
+        if (DbDataTypes.LargeInteger.Contains(dataTypeNormalized))
             return typeof(long);
         
-        if (DbDataTypes.SinglePrecisionFloat.Contains(sqlTypeNormalized))
+        if (DbDataTypes.SinglePrecisionFloat.Contains(dataTypeNormalized))
             return typeof(float);
         
-        if (DbDataTypes.DoublePrecisionFloat.Contains(sqlTypeNormalized))
+        if (DbDataTypes.DoublePrecisionFloat.Contains(dataTypeNormalized))
             return typeof(double);
         
-        if (DbDataTypes.Decimal.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Decimal.Contains(dataTypeNormalized))
             return typeof(decimal);
         
-        if (DbDataTypes.Character.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Character.Contains(dataTypeNormalized))
             return typeof(string);
         
-        if (DbDataTypes.DateTime.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Date.Contains(dataTypeNormalized) || DbDataTypes.DateTime.Contains(dataTypeNormalized))
             return typeof(DateTime);
         
-        if (DbDataTypes.DateTimeOffset.Contains(sqlTypeNormalized))
+        if (DbDataTypes.DateTimeOffset.Contains(dataTypeNormalized))
             return typeof(DateTimeOffset);
         
-        if (DbDataTypes.Boolean.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Time.Contains(dataTypeNormalized))
+            return typeof(TimeSpan);
+        
+        if (DbDataTypes.Boolean.Contains(dataTypeNormalized))
             return typeof(bool);
         
-        if (DbDataTypes.UniqueIdentifier.Contains(sqlTypeNormalized))
+        if (DbDataTypes.UniqueIdentifier.Contains(dataTypeNormalized))
             return typeof(Guid);
         
-        if (DbDataTypes.Binary.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Binary.Contains(dataTypeNormalized))
             return typeof(byte[]);
         
-        if (DbDataTypes.Json.Contains(sqlTypeNormalized) || DbDataTypes.Xml.Contains(sqlTypeNormalized) || DbDataTypes.Enumerated.Contains(sqlTypeNormalized) || DbDataTypes.Set.Contains(sqlTypeNormalized))
+        if (DbDataTypes.Json.Contains(dataTypeNormalized) || DbDataTypes.Xml.Contains(dataTypeNormalized) || DbDataTypes.Enumerated.Contains(dataTypeNormalized) || DbDataTypes.Set.Contains(dataTypeNormalized))
             return typeof(string);
         
         return typeof(string);

@@ -40,9 +40,14 @@ public static class DbDataTypes
         "decimal", "numeric", "money", "smallmoney", "number"
     };
 
+    public static ISet<string> Date = new HashSet<string>
+    {
+        "date"
+    };
+
     public static readonly ISet<string> DateTime = new HashSet<string>
     {
-        "date", "time", "datetime", "smalldatetime", "datetime2", "timestamp", "timestamp without time zone", "timestamp with local time zone"
+        "datetime", "smalldatetime", "datetime2", "timestamp", "timestamp without time zone", "timestamp with local time zone"
     };
     
     public static readonly ISet<string> DateTimeOffset = new HashSet<string>
@@ -106,16 +111,28 @@ public static class DbDataTypes
     };
     
     /// <summary>
+    /// Gets the SQL type from a user-defined type name.
+    /// </summary>
+    /// <param name="udtName">
+    /// The user-defined type name.
+    /// </param>
+    /// <returns>
+    /// The SQL type.
+    /// </returns>
+    public static string GetSqlType(string udtName)
+        => udtName.StartsWith("_") ? udtName[1..] : udtName;
+    
+    /// <summary>
     /// Checks if the SQL type is a user-defined type.
     /// </summary>
-    /// <param name="datalType">
+    /// <param name="dataType">
     /// The SQL type to check.
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the SQL type is a user-defined type; otherwise, <see langword="false"/>.
     /// </returns>
-    public static bool IsUserDefinedType(string datalType)
-        => UserDefined.Contains(datalType.ToLowerInvariant());
+    public static bool IsUserDefinedType(string dataType)
+        => UserDefined.Contains(dataType.ToLowerInvariant());
 
     /// <summary>
     /// Checks if the SQL type is an array.
@@ -174,8 +191,8 @@ public static class DbDataTypes
             
         if (Character.Contains(dataTypeNormalized))
             return value;
-
-        if (DateTime.Contains(dataTypeNormalized))
+        
+        if (Date.Contains(dataTypeNormalized) || DateTime.Contains(dataTypeNormalized))
             return System.DateTime.Parse(value);
         
         if (DateTimeOffset.Contains(dataTypeNormalized))
@@ -247,16 +264,4 @@ public static class DbDataTypes
         }
         return bytes;
     }
-
-    /// <summary>
-    /// Gets the SQL type from a user-defined type name.
-    /// </summary>
-    /// <param name="udtName">
-    /// The user-defined type name.
-    /// </param>
-    /// <returns>
-    /// The SQL type.
-    /// </returns>
-    public static string GetSqlType(string udtName)
-        => udtName.StartsWith("_") ? udtName[1..] : udtName;
 }
