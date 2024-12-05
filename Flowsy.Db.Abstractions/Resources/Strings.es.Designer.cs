@@ -86,5 +86,35 @@ namespace Flowsy.Db.Abstractions.Resources {
                 return ResourceManager.GetString("ConnectionStringDoesNotContainAServerNameOrIpAddress", resourceCulture);
             }
         }
+        
+        internal static string CannotParseValueForSqlTypeX {
+            get {
+                return ResourceManager.GetString("CannotParseValueForSqlTypeX", resourceCulture);
+            }
+        }
+        
+        internal static string ValueCannotBeNullOrEmptyForNonNullableColumns {
+            get {
+                return ResourceManager.GetString("ValueCannotBeNullOrEmptyForNonNullableColumns", resourceCulture);
+            }
+        }
+        
+        internal static string HexStringMustHaveAnEvenNumberOfCharacters {
+            get {
+                return ResourceManager.GetString("HexStringMustHaveAnEvenNumberOfCharacters", resourceCulture);
+            }
+        }
+        
+        internal static string ArrayColumnMustHaveUserDefinedType {
+            get {
+                return ResourceManager.GetString("ArrayColumnMustHaveUserDefinedType", resourceCulture);
+            }
+        }
+        
+        internal static string NameXIsNotAValidColumnName {
+            get {
+                return ResourceManager.GetString("NameXIsNotAValidColumnName", resourceCulture);
+            }
+        }
     }
 }

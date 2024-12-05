@@ -1,7 +1,7 @@
 namespace Flowsy.Db.Abstractions;
 
 /// <summary>
-/// Database provider type enumeration.
+/// Database provider family enumeration.
 /// </summary>
 public enum DbProviderFamily
 {

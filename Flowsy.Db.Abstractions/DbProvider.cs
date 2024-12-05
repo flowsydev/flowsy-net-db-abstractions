@@ -79,27 +79,39 @@ public class DbProvider
     {
         InvariantName = invariantName;
         Family = family;
+        ParameterPrefixForStatement = "@";
+        SupportsSchemas = false;
+        SupportsNamedParameters = false;
+        SupportsEnums = false;
         switch (Family)
         {
             case DbProviderFamily.PostgreSql:
                 DefaultPort = 5432;
                 DefaultDatabaseName = "postgres";
                 DefaultSchemaName = "public";
+                SupportsSchemas = true;
+                SupportsNamedParameters = true;
+                SupportsEnums = true;
                 break;
             case DbProviderFamily.MySql:
                 DefaultPort = 3306;
                 DefaultDatabaseName = "mysql";
                 DefaultSchemaName = "mysql";
+                SupportsEnums = true;
                 break;
             case DbProviderFamily.SqlServer:
                 DefaultPort = 1433;
                 DefaultDatabaseName = "master";
                 DefaultSchemaName = "dbo";
+                SupportsSchemas = true;
+                SupportsNamedParameters = true;
                 break;
             case DbProviderFamily.Oracle:
                 DefaultPort = 1521;
                 DefaultDatabaseName = null;
                 DefaultSchemaName = null;
+                ParameterPrefixForStatement = ":";
+                SupportsNamedParameters = true;
                 break;
             case DbProviderFamily.Sqlite:
                 DefaultPort = 0;
@@ -151,28 +163,22 @@ public class DbProvider
     /// <summary>
     /// Gets the parameter prefix for a statement.
     /// </summary>
-    public string ParameterPrefixForStatement
-        => Family == DbProviderFamily.Oracle ? ":" : "@";
+    public string ParameterPrefixForStatement { get; }
+    
+    /// <summary>
+    /// Gets a value indicating whether the provider supports schemas.
+    /// </summary>
+    public bool SupportsSchemas { get; }
     
     /// <summary>
     /// Gets a value indicating whether the provider supports named parameters.
     /// </summary>
-    public bool SupportsNamedParameters 
-        => Family is DbProviderFamily.PostgreSql or DbProviderFamily.SqlServer or DbProviderFamily.Oracle;
+    public bool SupportsNamedParameters { get; }
     
     /// <summary>
     /// Gets a value indicating whether the provider supports enums.
     /// </summary>
-    public bool SupportsEnums
-        => Family switch
-        {
-            DbProviderFamily.PostgreSql => true,
-            DbProviderFamily.MySql => true,
-            DbProviderFamily.SqlServer => false,
-            DbProviderFamily.Oracle => false,
-            DbProviderFamily.Sqlite => false,
-            _ => false
-        };
+    public bool SupportsEnums { get; }
     
     /// <summary>
     /// Gets a value indicating whether the provider supports the specified routine type.
@@ -205,6 +211,41 @@ public class DbProvider
             DbProviderFamily.Sqlite => false,
             _ => false
         };
+    
+    /// <summary>
+    /// Formats a qualified name for this provider.
+    /// </summary>
+    /// <param name="names">
+    /// The names to format.
+    /// </param>
+    /// <returns>
+    /// The formatted qualified name.
+    /// </returns>
+    public static string FormatQualifiedName(params string?[] names) => string.Join(".", names.Where(n => !string.IsNullOrEmpty(n)));
+
+    /// <summary>
+    /// Formats a qualified name for this provider.
+    /// </summary>
+    /// <param name="table">
+    /// The table to format.
+    /// </param>
+    /// <returns>
+    /// The formatted qualified name.
+    /// </returns>
+    public static string FormatQualifiedName(DbTableDescriptor table)
+        => FormatQualifiedName(table.TableCatalog, table.TableSchema, table.TableName);
+    
+    /// <summary>
+    /// Formats a qualified name for this provider.
+    /// </summary>
+    /// <param name="column">
+    /// The column to format.
+    /// </param>
+    /// <returns>
+    /// The formatted qualified name.
+    /// </returns>
+    public static string FormatQualifiedName(DbColumnDescriptor column)
+        => FormatQualifiedName(column.TableCatalog, column.TableSchema, column.TableName, column.ColumnName);
     
     /// <summary>
     /// Formats a casting expression for this provider.
@@ -263,8 +304,8 @@ public class DbProvider
     /// <returns>
     /// The connection string builder.
     /// </returns>
-    public DbConnectionStringBuilder GetConnectionStringBuilder(DbHost host, DbCredentials credentials, string? databaseName = null, IDictionary<string, string>? additionalParameters = null)
-        => GetConnectionStringBuilder(host.Address, host.Port, credentials.UserName, credentials.Password, databaseName, additionalParameters);
+    public DbConnectionStringBuilder CreateConnectionStringBuilder(DbHost host, DbCredentials credentials, string? databaseName = null, IDictionary<string, string>? additionalParameters = null)
+        => CreateConnectionStringBuilder(host.Address, host.Port, credentials.UserName, credentials.Password, databaseName, additionalParameters);
 
     /// <summary>
     /// Gets a connection string builder using the specified host, port and credentials.
@@ -293,7 +334,7 @@ public class DbProvider
     /// <exception cref="NotSupportedException">
     /// Thrown when the provider does not support connection string building.
     /// </exception>
-    public DbConnectionStringBuilder GetConnectionStringBuilder(string host, int port, string username, string password, string? databaseName = null, IDictionary<string, string>? additionalParameters = null)
+    public DbConnectionStringBuilder CreateConnectionStringBuilder(string host, int port, string username, string password, string? databaseName = null, IDictionary<string, string>? additionalParameters = null)
     {
         var connectionStringBuilder = Factory.CreateConnectionStringBuilder();
         if (connectionStringBuilder is null)
@@ -319,7 +360,8 @@ public class DbProvider
                     connectionStringBuilder.Add("Database", databaseName);
                 break;
             case DbProviderFamily.SqlServer:
-                connectionStringBuilder.Add("Data Source", $"{host},{port}");
+                connectionStringBuilder.Add("Data Source", $"{host}");
+                connectionStringBuilder.Add("Port", $"{port}");
                 connectionStringBuilder.Add("User Id", username);
                 connectionStringBuilder.Add("Password", password);
                 if (!string.IsNullOrEmpty(databaseName))
@@ -398,7 +440,7 @@ public class DbProvider
     /// </returns>
     public string BuildConnectionString(string host, int port, string username, string password, string? databaseName = null, IDictionary<string, string>? additionalParameters = null)
     {
-        var connectionStringBuilder = GetConnectionStringBuilder(host, port, username, password, databaseName, additionalParameters);
+        var connectionStringBuilder = CreateConnectionStringBuilder(host, port, username, password, databaseName, additionalParameters);
         return connectionStringBuilder.ConnectionString;
     }
     
@@ -416,14 +458,13 @@ public class DbProvider
         if (routine.ReturnsTable && !RoutineCanReturnTable(routine.Type))
             throw new NotSupportedException(string.Format(Strings.ProviderXCanNotReturnATableFromRoutineOfTypeY, Family, routine.Type));
 
-        var parameterPrefix = ParameterPrefixForStatement;
         List<string> parameterNames = [];
         List<string> parameterExpressions = [];
         foreach (var parameter in routine.Parameters)
         {
             parameterNames.Add(parameter.Name);
             
-            var expression = $"{parameterPrefix}{parameter.Name}";
+            var expression = $"{ParameterPrefixForStatement}{parameter.Name}";
             if (parameter is {ValueExpression: DbValueExpression.CustomTypeCast, CustomType: not null})
                 expression = FormatCasting(expression, parameter.CustomType);
             

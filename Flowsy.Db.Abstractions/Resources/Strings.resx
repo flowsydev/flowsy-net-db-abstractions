@@ -39,4 +39,19 @@
     <data name="ConnectionStringDoesNotContainAServerNameOrIpAddress" xml:space="preserve">
         <value>The connection string does not contain a server name or IP address.</value>
     </data>
+    <data name="CannotParseValueForSqlTypeX" xml:space="preserve">
+        <value>Cannot convert value for SQL type '{0}'.</value>
+    </data>
+    <data name="ValueCannotBeNullOrEmptyForNonNullableColumns" xml:space="preserve">
+        <value>Value cannot be null or empty for non-nullable columns.</value>
+    </data>
+    <data name="HexStringMustHaveAnEvenNumberOfCharacters" xml:space="preserve">
+        <value>Hexadecimal string must have an even number of characters.</value>
+    </data>
+    <data name="ArrayColumnMustHaveUserDefinedType" xml:space="preserve">
+        <value>Array column must have user defined type.</value>
+    </data>
+    <data name="NameXIsNotAValidColumnName" xml:space="preserve">
+        <value>Name '{0}' is not a valid column name.</value>
+    </data>
 </root>

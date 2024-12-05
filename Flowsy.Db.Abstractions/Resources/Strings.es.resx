@@ -39,4 +39,19 @@
     <data name="ConnectionStringDoesNotContainAServerNameOrIpAddress" xml:space="preserve">
         <value>La cadena de conexión no contiene un nombre de servidor o dirección IP.</value>
     </data>
+    <data name="CannotParseValueForSqlTypeX" xml:space="preserve">
+        <value>No es posible procesar valor para el tipo SQL '{0}'.</value>
+    </data>
+    <data name="ValueCannotBeNullOrEmptyForNonNullableColumns" xml:space="preserve">
+        <value>El valor no puede ser nulo o vacío para columnas que no permiten valores nulos.</value>
+    </data>
+    <data name="HexStringMustHaveAnEvenNumberOfCharacters" xml:space="preserve">
+        <value>La cadena hexadecimal debe tener una cantidad par de caracteres.</value>
+    </data>
+    <data name="ArrayColumnMustHaveUserDefinedType" xml:space="preserve">
+        <value>La columna de tipo array debe tener un tipo definido por el usuario.</value>
+    </data>
+    <data name="NameXIsNotAValidColumnName" xml:space="preserve">
+        <value>El nombre '{0}' no es un nombre de columna válido.</value>
+    </data>
 </root>

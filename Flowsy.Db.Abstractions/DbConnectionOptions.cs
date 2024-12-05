@@ -10,10 +10,13 @@ namespace Flowsy.Db.Abstractions;
 public sealed class DbConnectionOptions
 {
     private readonly DbConnectionStringBuilder _connectionStringBuilder;
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
     /// </summary>
+    /// <param name="provider">
+    /// The provider to use for the connection.
+    /// </param>
     /// <param name="host">
     /// The host name or IP address of the database server.
     /// </param>
@@ -23,101 +26,120 @@ public sealed class DbConnectionOptions
     /// <param name="databaseName">
     /// The name of the database to connect to.
     /// </param>
-    public DbConnectionOptions(DbHost host, DbCredentials credentials, string? databaseName = null)
+    public DbConnectionOptions(DbProvider provider, DbHost host, DbCredentials credentials, string? databaseName = null)
     {
+        Provider = provider;
         Host = host;
-        _connectionStringBuilder = host.Provider.GetConnectionStringBuilder(host, credentials, databaseName);
+        _connectionStringBuilder = host.CreateConnectionStringBuilder(Provider, credentials, databaseName);
     }
     
     /// <summary>
     /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
     /// </summary>
-    /// <param name="provider">
+    /// <param name="connectionStringBuilder">
+    /// The connection string builder to use for the connection.
+    /// </param>
+    /// /// <param name="provider">
     /// The provider to use for the connection.
     /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the connection string builder does not contain a server name or IP address.
+    /// </exception>
+    public DbConnectionOptions(DbConnectionStringBuilder connectionStringBuilder, DbProvider provider)
+    {
+        var address = connectionStringBuilder.GetServer() ?? throw new ArgumentException(Strings.ConnectionStringDoesNotContainAServerNameOrIpAddress, nameof(connectionStringBuilder));
+        _connectionStringBuilder = connectionStringBuilder;
+        Provider = provider;
+        Host = new DbHost(address, _connectionStringBuilder.GetPort() ?? Provider.DefaultPort);
+    }
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
+    /// </summary>
+    /// <param name="connectionStringBuilder">
+    /// The connection string builder to use for the connection.
+    /// </param>
+    /// <param name="providerFamily">
+    /// The provider to use for the connection.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the connection string builder does not contain a server name or IP address.
+    /// </exception>
+    public DbConnectionOptions(DbConnectionStringBuilder connectionStringBuilder, DbProviderFamily providerFamily)
+        : this(connectionStringBuilder.ConnectionString, providerFamily)
+    {
+    }
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
+    /// </summary>
+    /// <param name="connectionStringBuilder">
+    /// The connection string builder to use for the connection.
+    /// </param>
+    /// <param name="providerInvariantName">
+    /// The invariant name of the provider to use for the connection.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the connection string builder does not contain a server name or IP address.
+    /// </exception>
+    public DbConnectionOptions(DbConnectionStringBuilder connectionStringBuilder, string providerInvariantName)
+        : this(connectionStringBuilder, DbProvider.GetInstance(providerInvariantName))
+    {
+    }
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
+    /// </summary>
     /// <param name="connectionString">
     /// The connection string to use for the connection.
     /// </param>
-    /// <exception cref="InvalidOperationException">
+    /// <param name="provider">
+    /// The provider to use for the connection.
+    /// </param>
+    /// <exception cref="ArgumentException">
     /// Thrown when the connection string does not contain a server name or IP address.
     /// </exception>
-    public DbConnectionOptions(DbProvider provider, string connectionString)
-    {
-        _connectionStringBuilder = new DbConnectionStringBuilder
-        {
-            ConnectionString = connectionString
-        };
-        var address = _connectionStringBuilder.GetServer() ?? throw new InvalidOperationException(Strings.ConnectionStringDoesNotContainAServerNameOrIpAddress);
-        Host = new DbHost(provider, address, _connectionStringBuilder.GetPort());
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
-    /// </summary>
-    /// <param name="provider">
-    /// The provider to use for the connection.
-    /// </param>
-    /// <param name="connectionStringBuilder">
-    /// The connection string builder to use for the connection.
-    /// </param>
-    public DbConnectionOptions(DbProvider provider, DbConnectionStringBuilder connectionStringBuilder) : this(provider, connectionStringBuilder.ConnectionString)
+    public DbConnectionOptions(string connectionString, DbProvider provider) : this(new DbConnectionStringBuilder { ConnectionString = connectionString }, provider)
     {
     }
     
     /// <summary>
     /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
     /// </summary>
-    /// <param name="providerFamily">
-    /// The provider to use for the connection.
-    /// </param>
     /// <param name="connectionString">
     /// The connection string to use for the connection.
     /// </param>
-    public DbConnectionOptions(DbProviderFamily providerFamily, string connectionString) : this(DbProvider.GetInstance(providerFamily), connectionString)
+    /// <param name="providerFamily">
+    /// The provider to use for the connection.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the connection string does not contain a server name or IP address.
+    /// </exception> 
+    public DbConnectionOptions(string connectionString, DbProviderFamily providerFamily) : this(connectionString, DbProvider.GetInstance(providerFamily))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
+    /// </summary>
+    /// <param name="connectionString">
+    /// The connection string to use for the connection.
+    /// </param>
+    /// <param name="providerInvariantName">
+    /// The invariant name of the provider to use for the connection.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the connection string does not contain a server name or IP address.
+    /// </exception>
+    public DbConnectionOptions(string connectionString, string providerInvariantName)
+        : this(connectionString, DbProvider.GetInstance(providerInvariantName))
     {
     }
     
     /// <summary>
-    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
+    /// Gets the provider associated with the connection options.
     /// </summary>
-    /// <param name="providerFamily">
-    /// The provider to use for the connection.
-    /// </param>
-    /// <param name="connectionStringBuilder">
-    /// The connection string builder to use for the connection.
-    /// </param>
-    public DbConnectionOptions(DbProviderFamily providerFamily, DbConnectionStringBuilder connectionStringBuilder)
-        : this(providerFamily, connectionStringBuilder.ConnectionString)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
-    /// </summary>
-    /// <param name="providerInvariantName">
-    /// The invariant name of the provider to use for the connection.
-    /// </param>
-    /// <param name="connectionString">
-    /// The connection string to use for the connection.
-    /// </param>
-    public DbConnectionOptions(string providerInvariantName, string connectionString)
-        : this(DbProvider.GetInstance(providerInvariantName), connectionString)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DbConnectionOptions"/> class.
-    /// </summary>
-    /// <param name="providerInvariantName">
-    /// The invariant name of the provider to use for the connection.
-    /// </param>
-    /// <param name="connectionStringBuilder">
-    /// The connection string builder to use for the connection.
-    /// </param>
-    public DbConnectionOptions(string providerInvariantName, DbConnectionStringBuilder connectionStringBuilder)
-        : this(DbProvider.GetInstance(providerInvariantName), connectionStringBuilder)
-    {
-    }
+    public DbProvider Provider { get; }
     
     /// <summary>
     /// Gets the host of the database associated with the connection options.
@@ -144,7 +166,7 @@ public sealed class DbConnectionOptions
     /// The password to use for the connection.
     /// </param>
     /// <param name="defaultDatabase">
-    /// Whether to use the default database for the connection.
+    /// Whether to use the default database for underlying provider.
     /// </param>
     /// <param name="open">
     /// Whether to open the connection after creating it.
@@ -160,8 +182,8 @@ public sealed class DbConnectionOptions
     )
     {
         var connection =
-            Host.Provider.Factory.CreateConnection() ?? 
-            throw new InvalidOperationException(string.Format(Strings.FailedToCreateConnectionForProviderX, Host.Provider.Family));
+            Provider.Factory.CreateConnection() ?? 
+            throw new InvalidOperationException(string.Format(Strings.FailedToCreateConnectionForProviderX, Provider.Family));
         
         var builder = new DbConnectionStringBuilder()
         {
@@ -174,9 +196,9 @@ public sealed class DbConnectionOptions
         if (!string.IsNullOrEmpty(password))
             builder.SetPassword(password);
 
-        if (defaultDatabase && Host.Provider.Family != DbProviderFamily.Oracle && Host.Provider.Family != DbProviderFamily.Sqlite)
+        if (defaultDatabase && Provider.Family != DbProviderFamily.Oracle && Provider.Family != DbProviderFamily.Sqlite)
         {
-            var defaultDatabaseName = Host.Provider.DefaultDatabaseName;
+            var defaultDatabaseName = Provider.DefaultDatabaseName;
             if (!string.IsNullOrEmpty(defaultDatabaseName))
                 builder.SetDatabaseName(defaultDatabaseName);
         }
@@ -203,6 +225,6 @@ public sealed class DbConnectionOptions
         };
         csb.SetPassword("********");
 
-        return $"[{Host.Provider.Family}] {csb.ConnectionString}";
+        return $"[{Provider.Family}] {csb.ConnectionString}";
     }
 }
